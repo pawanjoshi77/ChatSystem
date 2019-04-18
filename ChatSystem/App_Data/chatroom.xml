@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<chatroomlist>
+  <chatroom roomId ="5">
+    <roomName>FrozenRoom</roomName>
+    <numberofUsers>2</numberofUsers>
+  </chatroom>
+  <chatroom roomId ="4">
+    <roomName>TalkRoom</roomName>
+    <numberofUsers>3</numberofUsers>
+  </chatroom>
+  <chatroom roomId ="3">
+    <roomName>MyRoom</roomName>
+    <numberofUsers>2</numberofUsers>
+  </chatroom>
+</chatroomlist> 

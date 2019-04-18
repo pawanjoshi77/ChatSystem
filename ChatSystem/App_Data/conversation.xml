@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<conversation>
+  <chat roomId="5">
+    <user name="jack123">
+      <messages>
+        <message date="2019-02-06T09:01:00">
+          <from>
+            <user friendlyName="Jackie" />
+          </from>
+          <to>
+            <user friendlyName="Sandy" />
+          </to>
+          <text>Hello, how are you Sandy?</text>
+        </message>
+        <message date="2019-02-06T09:02:00">
+          <from>
+            <user friendlyName="Sandy" />
+          </from>
+          <to>
+            <user friendlyName="Jackie" />
+          </to>
+          <text>I am good and you?</text>
+        </message>
+      </messages>
+    </user>
+    <user name="Pawan Joshi">
+      <messages>
+        <message date="4/17/2019 11:23:52 PM">
+          <text>tst2</text>
+        </message>
+      </messages>
+    </user>
+  </chat>
+</conversation>
