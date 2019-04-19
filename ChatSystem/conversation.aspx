@@ -18,8 +18,28 @@
             <asp:TextBox ID="txt_message" runat="server"></asp:TextBox>
         </div>
         <div>
-            <asp:Button ID="btn_submit" runat="server" Text="Submit" OnClick="btn_submit_Click" />
+            <input id="btn_submit" type="button" value="Submit"
+            onclick = "SubmitMessage()" />
         </div>
     </form>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js" type="text/javascript"></script>
+    <script type = "text/javascript">
+        function SubmitMessage() {
+            $.ajax({
+                type: "POST",
+                url: "conversation.aspx/btn_submit_Click",
+                data: '{_message: "' + $("#txt_message").val() + '" }',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: OnSuccess,
+                failure: function (response) {
+                    alert(response.d);                }
+            });
+        }
+        function OnSuccess(response) {
+                 $("#chatbox").html(response.d);
+        }
+</script>
+
 </body>
 </html>

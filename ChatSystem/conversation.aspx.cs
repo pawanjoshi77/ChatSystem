@@ -10,9 +10,12 @@ namespace ChatSystem
 {
     public partial class conversation : System.Web.UI.Page
     {
+        static string _userName;
+        static string _roomId;
+        static string _xmlpath;
         protected void Page_Load(object sender, EventArgs e)
         {
-            string username = Session["username"] != null ? Session["username"].ToString(): "";
+            string userName = Session["username"] != null ? Session["username"].ToString(): "";
             string roomId = Request.QueryString["roomId"];// to do check null value
             if (roomId == null)
             {
@@ -22,12 +25,21 @@ namespace ChatSystem
             {
                 Session["roomId"] = roomId;
             }
+            _userName = userName;
+            _roomId = roomId;
             string xmlpath = Request.PhysicalApplicationPath + "App_Data/conversation.xml";
+            _xmlpath = xmlpath;
             XmlDocument doc = new XmlDocument();
             doc.Load(xmlpath);
+            string message = getMessagesForUserFromXml(doc, roomId, userName);
+            chatbox.InnerHtml = message;
+        }
+
+        static string getMessagesForUserFromXml(XmlDocument doc, string roomId, string userName )
+        {
             string message = "";
 
-            XmlNode messages = doc.SelectSingleNode(string.Format("/conversation/chat[@roomId='{0}']/user[@name='{1}']/messages", roomId, username));
+            XmlNode messages = doc.SelectSingleNode(string.Format("/conversation/chat[@roomId='{0}']/user[@name='{1}']/messages", roomId, userName));
             if (messages != null)
             {
                 foreach (XmlNode nodei in messages)
@@ -39,55 +51,54 @@ namespace ChatSystem
                         {
                             message += nodex.InnerText + "<br/>";
                         }
-
                     }
                 }
-
-                chatbox.InnerHtml = message;
             }
+            return message;
         }
 
-        protected void btn_submit_Click(object sender, EventArgs e)
+        [System.Web.Services.WebMethod]
+        public static string btn_submit_Click(string _message)
         {
-            string username = Session["username"].ToString();
-            string roomId = Session["roomId"].ToString();
-
-            string path = Request.PhysicalApplicationPath + "App_Data/conversation.xml";
             XmlDocument doc = new XmlDocument();
-            doc.Load(path);
-            XmlNode messages = doc.SelectSingleNode(string.Format("/conversation/chat[@roomId='{0}']/user[@name='{1}']/messages", roomId, username));
+            doc.Load(_xmlpath);
+            XmlNode messages = doc.SelectSingleNode(string.Format("/conversation/chat[@roomId='{0}']/user[@name='{1}']/messages", _roomId, _userName));
             if (messages != null)
-            {               
-                XmlNode message = CreateMessageNode(doc);
+            {
+                XmlNode message = GetMessage(_message, doc);
                 messages.AppendChild(message);
-                lblOutput.Text = "Message added";
             }
             else
             {
-                XmlNode roomNode = doc.SelectSingleNode(string.Format("/conversation/chat[@roomId='{0}']", roomId));
+                XmlNode roomNode = doc.SelectSingleNode(string.Format("/conversation/chat[@roomId='{0}']", _roomId));
                 XmlNode userNode = doc.CreateElement("user");
                 XmlAttribute attribute = doc.CreateAttribute("name");
-                attribute.InnerText = username;
+                attribute.InnerText = _userName;
                 userNode.Attributes.Append(attribute);
 
                 XmlNode messagesNode = doc.CreateElement("messages");
 
-                XmlNode message = CreateMessageNode(doc);
+                XmlNode message = GetMessage(_message, doc);
                 messagesNode.AppendChild(message);
                 userNode.AppendChild(messagesNode);
                 roomNode.AppendChild(userNode);
-                lblOutput.Text = "Message added";
+                
             }
-            doc.Save(path);
-            Response.Redirect("conversation.aspx");
-
+            doc.Save(_xmlpath);
+            string messageList = getMessagesForUserFromXml(doc, _roomId, _userName);
+            return messageList;
         }
 
-        XmlNode CreateMessageNode(XmlDocument doc)
+        private static XmlNode GetMessage(string _message, XmlDocument doc)
+        {
+            return CreateMessageNode(_message, doc);
+        }
+
+        static XmlNode CreateMessageNode(String _message, XmlDocument doc)
         {
             XmlNode message = doc.CreateElement("message");
             XmlNode text = doc.CreateElement("text");
-            text.InnerText = txt_message.Text;
+            text.InnerText = _message;
             // 2019-02-06T09:02:00
             string dateTime = DateTime.Now.ToString();
             XmlAttribute attribute = doc.CreateAttribute("date");

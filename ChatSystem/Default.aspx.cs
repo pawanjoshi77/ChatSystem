@@ -37,6 +37,8 @@ namespace ChatSystem
         protected string googleplus_client_secret = "oJzriGpa5Uc_-J9Az-s89hPl";                                                // Replace this with your Client Secret
         protected string googleplus_redirect_url = "http://localhost:50829/Default.aspx";                                         // Replace this with your Redirect URL; Your Redirect URL from your developer.google application should match this URL.
         protected string Parameters;
+
+        private static readonly byte[] salt = Encoding.ASCII.GetBytes("This is My Salt value");
         protected void Page_Load(object sender, EventArgs e)
         {
             Session["username"] = txt_username.Text;
@@ -124,7 +126,7 @@ namespace ChatSystem
                 XmlNode root = doc.SelectSingleNode("userlist");
                 XmlNode users = CreateUsersNode(doc);
                 root.AppendChild(users);
-                lblOutput.Text = "User added";
+                //lblOutput.Text = "User added";
             }
             else
             {
@@ -134,7 +136,7 @@ namespace ChatSystem
                 XmlNode users = CreateUsersNode(doc);
                 root.AppendChild(users);
                 doc.AppendChild(root);
-                lblOutput.Text = "XML file created and user added successfully";
+                //lblOutput.Text = "XML file created and user added successfully";
             }
             doc.Save(path);
 
@@ -149,14 +151,39 @@ namespace ChatSystem
             
 
             XmlNode password = doc.CreateElement("password");
-            password.InnerText = txt_password.Text;
-
-            users.AppendChild(username);
+            string plainTextPasswd = txt_password.Text;
+            byte[] hashedPasswd = Hash(plainTextPasswd, salt);
+            byte[] hashedEncryptedPasswd = Hash(hashedPasswd, salt);
+            string encryptedPasswd = Convert.ToBase64String(hashedEncryptedPasswd);
+            password.InnerText = encryptedPasswd;
+           users.AppendChild(username);
             users.AppendChild(password);
-
-
-
+           bool tstPasswd = ConfirmPassword(plainTextPasswd, encryptedPasswd);
             return users;
+        }
+
+        public static byte[] Hash(string value, byte[] salt)
+        {
+            return Hash(Encoding.UTF8.GetBytes(value), salt);
+        }
+
+        public static byte[] Hash(byte[] value, byte[] salt)
+        {
+            byte[] saltedValue = value.Concat(salt).ToArray();
+            // Alternatively use CopyTo.
+            //var saltedValue = new byte[value.Length + salt.Length];
+            //value.CopyTo(saltedValue, 0);
+            //salt.CopyTo(saltedValue, value.Length);
+
+            return new SHA256Managed().ComputeHash(saltedValue);
+        }
+
+        public bool ConfirmPassword(string password, string storedPasswd)
+        {
+            byte[] hashedPasswd = Hash(password, salt);
+            byte[] hashedEncryptedPasswd = Hash(hashedPasswd, salt);
+            string encryptedPasswd = Convert.ToBase64String(hashedEncryptedPasswd);
+            return storedPasswd.Equals(encryptedPasswd);
         }
 
     }
