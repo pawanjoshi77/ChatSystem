@@ -21,18 +21,6 @@
           </to>
           <text>I am good and you?</text>
         </message>
-        <message date="4/18/2019 10:50:33 PM">
-          <text>tst 1</text>
-        </message>
-        <message date="4/19/2019 12:15:26 AM">
-          <text>hey yash</text>
-        </message>
-        <message date="4/19/2019 12:15:55 AM">
-          <text>Hey Jack</text>
-        </message>
-        <message date="4/19/2019 12:16:58 AM">
-          <text>hey pawan</text>
-        </message>
       </messages>
     </user>
     <user name="Pawan Joshi">
@@ -46,4 +34,54 @@
       </messages>
     </user>
   </chat>
+  <chat roomId="4">
+    <user name="jack123">
+      <messages>
+        <message date="2019-02-06T09:01:00">
+          <from>
+            <user friendlyName="Jon" />
+          </from>
+          <to>
+            <user friendlyName="Mike" />
+          </to>
+          <text>Hey Mike</text>
+        </message>
+        <message date="2019-02-06T09:02:00">
+          <from>
+            <user friendlyName="Mike" />
+          </from>
+          <to>
+            <user friendlyName="Jon" />
+          </to>
+          <text>Hey Jon</text>
+        </message>
+      </messages>
+    </user>
+  </chat>
+  <chat roomId="3">
+    <user name="jack123">
+      <messages>
+        <message date="2019-02-06T09:01:00">
+          <from>
+            <user friendlyName="Carol" />
+          </from>
+          <to>
+            <user friendlyName="Adam" />
+          </to>
+          <text>Hello Adam</text>
+        </message>
+        <message date="2019-02-06T09:02:00">
+          <from>
+            <user friendlyName="Adam" />
+          </from>
+          <to>
+            <user friendlyName="Carol" />
+          </to>
+          <text>Hey Carol</text>
+        </message>
+      </messages>
+    </user>
+  </chat>
+
+
 </conversation>
